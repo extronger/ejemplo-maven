@@ -1,4 +1,5 @@
 import groovy.json.JsonSlurperClassic
+
 def jsonParse(def json) {
     new groovy.json.JsonSlurperClassic().parseText(json)
 }
@@ -29,4 +30,19 @@ pipeline {
                 //record the test results and archive the jar file.
                 success {
                     archiveArtifacts(artifacts:'**/*.txt', followSymlinks:false)
-   
+                }
+            }
+        }
+    }
+    post {
+        always {
+            sh "echo 'fase always executed post'"
+        }
+        success {
+            sh "echo 'fase success'"
+        }
+        failure {
+            sh "echo 'fase failure'"
+        }
+    }
+}
