@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run:
           name: "Say hello"
-          command: "echo Hello, World Usach!"
+          command: "echo Hello, World Usach!s!"
       - run:
           name: "Compile Code"
           command: "mvn clean compile -e"
