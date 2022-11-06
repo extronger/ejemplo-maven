@@ -32,23 +32,6 @@ pipeline {
                 }
             }
         }
-        stage("Step 4: Run .jar in local and in background"){
-            steps {
-                script {
-                sh "echo 'Running .jar'"            
-                sh "nohup bash mvnw spring-boot:run &"
-                }
-            }
-        }
-        stage("Step 5: Testing application"){
-            steps {
-                script {
-                    final String url = "http://localhost:8081/rest/mscovid/test?msg=testing"
-                    final String response = sh(script: "curl -s $url", returnStdout: true).trim()
-                    echo response
-                }
-            }
-        }
     }
     post {
         always {
