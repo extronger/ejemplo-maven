@@ -32,11 +32,11 @@ pipeline {
                 }
             }
         }
-        stage("Step 4: Run .jar in local"){
+        stage("Step 4: Run .jar in local and in background"){
             steps {
                 script {
                 sh "echo 'Running .jar'"            
-                sh "./mvnw spring-boot:run"
+                sh "nohup bash mvnw spring-boot:run &"
                 }
             }
         }
