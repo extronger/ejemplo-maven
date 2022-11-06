@@ -5,30 +5,46 @@ def jsonParse(def json) {
 pipeline {
     agent any
     stages {
-        stage("Paso 1: Compliar"){
+        stage("Step 1: Compile code"){
             steps {
                 script {
-                sh "echo 'Compile Code!'"
+                sh "echo 'Compiling code'"
                 // Run Maven on a Unix agent.
                 sh "./mvnw clean compile -e"
                 }
             }
         }
-        stage("Paso 2: Testear"){
+        stage("Step 2: Test code"){
             steps {
                 script {
-                sh "echo 'Test Code!'"
+                sh "echo 'Testing code'"
                 // Run Maven on a Unix agent.
                 sh "./mvnw clean test -e"
                 }
             }
         }
-        stage("Paso 3: Build .Jar"){
+        stage("Step 3: Build .jar"){
             steps {
                 script {
-                sh "echo 'Build .Jar!'"
+                sh "echo 'Building .jar'"
                 // Run Maven on a Unix agent.
                 sh "./mvnw clean package -e"
+                }
+            }
+        }
+        stage("Step 4: Run .jar in local"){
+            steps {
+                script {
+                sh "echo 'Running .jar'"            
+                sh "./mvnw spring-boot:run"
+                }
+            }
+        }
+        stage("Step 5: Testing application"){
+            steps {
+                script {
+                sh "echo 'Testing endpoint'"
+                sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
                 }
             }
         }
