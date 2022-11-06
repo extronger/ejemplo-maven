@@ -43,8 +43,9 @@ pipeline {
         stage("Step 5: Testing application"){
             steps {
                 script {
-                sh "echo 'Testing endpoint'"
-                sh "curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
+                    final String url = "http://localhost:8081/rest/mscovid/test?msg=testing"
+                    final String response = sh(script: "curl -s $url", returnStdout: true).trim()
+                    echo response
                 }
             }
         }
