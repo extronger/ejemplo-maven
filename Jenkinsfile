@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                 sh "echo 'Building .jar'"
-                sh "/mvnw spring-boot:run"
+                sh "./mvnw spring-boot:run"
                 }
             }
         }
