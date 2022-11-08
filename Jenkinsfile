@@ -9,7 +9,6 @@ pipeline {
             steps {
                 script {
                 sh "echo 'Compiling code'"
-                // Run Maven on a Unix agent.
                 sh "./mvnw clean compile -e"
                 }
             }
@@ -18,7 +17,6 @@ pipeline {
             steps {
                 script {
                 sh "echo 'Testing code'"
-                // Run Maven on a Unix agent.
                 sh "./mvnw clean test -e"
                 }
             }
@@ -26,9 +24,24 @@ pipeline {
         stage("Step 3: Build .jar"){
             steps {
                 script {
-                sh "echo 'Building .jar'"
-                // Run Maven on a Unix agent.
+                sh "echo 'Building .jar'"        
                 sh "./mvnw clean package -e"
+                }
+            }
+        }
+        stage("Step 4: Building .jar"){
+            steps {
+                script {
+                sh "echo 'Building .jar'"
+                sh "mvn spring-boot:run &"
+                }
+            }
+        }
+        stage("Step 5: Running microservice"){
+            steps {
+                script {
+                sh "sleep 20"
+                sh "curl -X GET http://localhost:8081/rest/mscovid/test?msg=testing"
                 }
             }
         }
