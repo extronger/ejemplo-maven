@@ -20,7 +20,15 @@ pipeline {
                 }
             }
         }
-        stage('Paso 3: Análisis SonarQube') {
+        stage('Paso 3: Build .Jar') {
+            steps {
+                script {
+                    failedStage = env.STAGE_NAME
+                    sh './mvnw clean package -e'
+                }
+            }
+        }
+        stage('Paso 4: Análisis SonarQube') {
             steps {
                 script {
                     failedStage = env.STAGE_NAME
@@ -28,14 +36,6 @@ pipeline {
                 }
                 withSonarQubeEnv('sonarqube') {
                     sh './mvnw clean verify sonar:sonar -Dsonar.projectKey=custom-project-key'
-                }
-            }
-        }
-        stage('Paso 4: Build .Jar') {
-            steps {
-                script {
-                    failedStage = env.STAGE_NAME
-                    sh './mvnw clean package -e'
                 }
             }
         }
