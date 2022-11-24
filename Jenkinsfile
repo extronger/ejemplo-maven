@@ -1,88 +1,66 @@
-import groovy.json.JsonSlurperClassic
-def jsonParse(def json) {
-    new groovy.json.JsonSlurperClassic().parseText(json)
-}
-
-void setBuildStatus(String message, String context, String state) {
-    withCredentials([string(credentialsId: 'github-commit-status-token', variable: 'TOKEN')]) {
-        sh """
-            set -x
-            curl \"https://api.github.com/repos/org/repo/statuses/$GIT_COMMIT?access_token=$TOKEN\" \
-                -H \"Content-Type: application/json\" \
-                -X POST \
-                -d \"{\\\"description\\\": \\\"$message\\\", \\\"state\\\": \\\"$state\\\", \\\"context\\\": \\\"$context\\\", \\\"target_url\\\": \\\"$BUILD_URL\\\"}\"
-        """
-    } 
-}
-
+def msgCommon = "[Diego Inostroza][${env.JOB_NAME}][${env.BUILD_NUMBER}]"
+def failedStage
 
 pipeline {
     agent any
     stages {
-        stage("Step 1: Compile code"){
+        stage('Paso 1: Compilar') {
             steps {
                 script {
-                sh "echo 'Compiling code'"
-                sh "./mvnw clean compile -e"
+                    failedStage = env.STAGE_NAME
+                    sh './mvnw clean compile -e'
                 }
             }
         }
-        stage("Step 2: Test code"){
+        stage('Paso 2: Testear') {
             steps {
                 script {
-                sh "echo 'Testing code'"
-                sh "./mvnw clean test -e"
+                    failedStage = env.STAGE_NAME
+                    sh './mvnw clean test -e'
                 }
             }
         }
-        stage("Step 3: Build .jar"){
+        stage('Paso 3: Análisis SonarQube') {
             steps {
-                script {
-                sh "echo 'Building .jar'"        
-                sh "./mvnw clean package -e"
+                script {failedStage = env.STAGE_NAME}
+                withSonarQubeEnv('sonarqube') {
+                    sh './mvnw clean verify sonar:sonar -Dsonar.projectKey=custom-project-key'
                 }
             }
         }
-        stage("Step 4: Building .jar"){
+        stage('Paso 4: Build .Jar') {
             steps {
                 script {
-                sh "echo 'Building .jar'"
-                sh "nohup bash mvnw spring-boot:run &"
+                    failedStage = env.STAGE_NAME
+                    sh './mvnw clean package -e'
                 }
             }
         }
-        stage("Step 5: Running microservice"){
+        stage('Step 5: Running microservice') {
             steps {
                 script {
-                sh "sleep 20"
-                sh "curl -X GET http://localhost:8081/rest/mscovid/test?msg=ThisIsANewTestMessage"
-                }
-            }
-        }
-        stage('Last one') {
-            steps {
-                setBuildStatus("Compiling", "compile", "pending");
-                script {
-                    try {
-                        // do the build here
-                        setBuildStatus("Build complete", "compile", "success");
-                    } catch (err) {
-                        setBuildStatus("Failed", "pl-compile", "failure");
-                        throw err
-                    }
+                    failedStage = env.STAGE_NAME
+                    sh('''
+                        nohup bash mvnw spring-boot:run &
+                        sleep 10
+                        curl -X GET "http://localhost:8081/rest/mscovid/test?msg=ThisIsANewTestMessage"
+                ''')
                 }
             }
         }
     }
     post {
-        always {
-            sh "echo 'fase always executed post'"
-        }
         success {
-            sh "echo 'fase success'"
+            slackSend color: 'good',
+            message: "${msgCommon} Ejecucion Exitosa",
+            teamDomain: 'devopsusach20-lzc3526',
+            tokenCredentialId: 'slack-token-my-channel'
         }
         failure {
-            sh "echo 'fase failure'"
+            slackSend color: 'danger',
+            message: "${} Ejecucion fallida en stage [${failedStage}]",
+            teamDomain: 'devopsusach20-lzc3526',
+            tokenCredentialId: 'slack-token-my-channel'
         }
     }
 }
