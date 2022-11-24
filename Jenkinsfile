@@ -22,7 +22,10 @@ pipeline {
         }
         stage('Paso 3: Análisis SonarQube') {
             steps {
-                script {failedStage = env.STAGE_NAME}
+                script {
+                    failedStage = env.STAGE_NAME
+                    error('Test')
+                }
                 withSonarQubeEnv('sonarqube') {
                     sh './mvnw clean verify sonar:sonar -Dsonar.projectKey=custom-project-key'
                 }
@@ -58,7 +61,7 @@ pipeline {
         }
         failure {
             slackSend color: 'danger',
-            message: "${} Ejecucion fallida en stage [${failedStage}]",
+            message: "${msgCommon} Ejecucion fallida en stage [${failedStage}]",
             teamDomain: 'devopsusach20-lzc3526',
             tokenCredentialId: 'slack-token-my-channel'
         }
