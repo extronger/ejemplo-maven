@@ -46,11 +46,11 @@ pipeline {
             }
         }
 
-        stage('Paso 3: Curl Springboot maven sleep 20') {
+        stage('Paso 3: Curl Springboot maven sleep 20 and test with newman') {
             steps {
                 script {
                     sh 'nohup bash ./mvnw spring-boot:run  & >/dev/null'
-                    sh "sleep 20 && curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
+                    sh "sleep 10 && newman run ejemplo-maven.postman_collection.json -n 10  --delay-request 1000"
                 }
             }
         }
@@ -106,7 +106,7 @@ pipeline {
         stage('Paso 8: Testear Artefacto - Dormir(Esperar 20sg) ') {
             steps {
                 script {
-                    sh "sleep 20 && curl -X GET 'http://localhost:8081/rest/mscovid/test?msg=testing'"
+                    sh "sleep 10 && newman run ejemplo-maven.postman_collection.json -n 10  --delay-request 1000"
                 }
             }
         }
