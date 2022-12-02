@@ -17,7 +17,7 @@ pipeline {
                     checkout(
                                 [$class: 'GitSCM',
                                 //Acá reemplazar por el nonbre de branch
-                                branches: [[name: 'feature/jenkins2' ]],
+                                branches: [[name: 'feature/newman' ]],
                                 //Acá reemplazar por su propio repositorio
                                 userRemoteConfigs: [[url: 'https://github.com/extronger/ejemplo-maven.git']]])
                 }
