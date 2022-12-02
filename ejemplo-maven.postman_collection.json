@@ -1,9 +1,8 @@
 {
 	"info": {
-		"_postman_id": "df314bff-8978-43e7-b4bf-9c8b4c091209",
+		"_postman_id": "1127a672-12d1-487e-a818-d9ceb375a73b",
 		"name": "ejemplo-maven",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "482477"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -51,7 +50,7 @@
 			"response": []
 		},
 		{
-			"name": "estadoPais",
+			"name": "estadoPais2",
 			"event": [
 				{
 					"listen": "test",
@@ -60,24 +59,9 @@
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});",
-							"pm.test(\"Mensaje == ok\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.mensaje).to.eql(\"ok\");",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
 							"",
 							"pm.test(\"Response time is less than 200ms\", function () {",
-							"    pm.expect(pm.response.responseTime).to.be.below(250);",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -86,9 +70,16 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
 				"url": {
-					"raw": "http://localhost:8081/rest/mscovid/estadoPais?pais=chile",
+					"raw": "http://localhost:8081/rest/mscovid/estadoPais?pais=ecuador",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -102,7 +93,7 @@
 					"query": [
 						{
 							"key": "pais",
-							"value": "chile"
+							"value": "ecuador"
 						}
 					]
 				}
@@ -110,7 +101,7 @@
 			"response": []
 		},
 		{
-			"name": "estadoPais2",
+			"name": "estadoPais",
 			"event": [
 				{
 					"listen": "test",
@@ -121,7 +112,7 @@
 							"});",
 							"",
 							"pm.test(\"Response time is less than 200ms\", function () {",
-							"    pm.expect(pm.response.responseTime).to.be.below(250);",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -134,7 +125,8 @@
 					{
 						"key": "Authorization",
 						"value": "application/json",
-						"type": "text"
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"url": {
@@ -171,7 +163,7 @@
 							"});",
 							"",
 							"pm.test(\"Response time is less than 200ms\", function () {",
-							"    pm.expect(pm.response.responseTime).to.be.below(250);",
+							"    pm.expect(pm.response.responseTime).to.be.below(900);",
 							"});"
 						],
 						"type": "text/javascript"
