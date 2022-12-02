@@ -50,7 +50,7 @@ pipeline {
             steps {
                 script {
                     sh 'nohup bash ./mvnw spring-boot:run  & >/dev/null'
-                    sh "sleep 10 && newman run ejemplo-maven.postman_collection.json -n 10  --delay-request 1000"
+                    sh 'sleep 10 && newman run ejemplo-maven.postman_collection.json -n 10  --delay-request 1000'
                 }
             }
         }
@@ -103,10 +103,10 @@ pipeline {
                 }
             }
         }
-        stage('Paso 8: Testear Artefacto - Dormir(Esperar 20sg) ') {
+        stage('Paso 8: Testear Artefacto - Dormir(Esperar 20sg) y test with newman ') {
             steps {
                 script {
-                    sh "sleep 10 && newman run ejemplo-maven.postman_collection.json -n 10  --delay-request 1000"
+                    sh 'sleep 10 && newman run ejemplo-maven.postman_collection.json -n 10  --delay-request 1000'
                 }
             }
         }
